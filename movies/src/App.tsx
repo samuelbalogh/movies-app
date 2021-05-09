@@ -56,6 +56,10 @@ function App() {
       text: 'Highest grossing movies',
       value: 'grossing'
     },
+    {
+      text: 'French movies',
+      value: 'french'
+    },
   ]
 
   useEffect(() => {
@@ -118,10 +122,13 @@ function App() {
       </header>
       <ul className="md:grid grid-col grid-cols-3 gap-4">
         
-        {movies.map(({ title, year, cast, genres, poster, overview }) => 
+        {movies.map(({ title, original_title, year, cast, genres, poster, overview, imdb_id }) => 
           <li className="border border-yellow-200 shadow pl-12 pr-12 pt-2">
             <h3 className="px-4 font-semibold">{title}</h3>
-            <p className="px-4">{year}</p>
+            { title !== original_title && 
+              <h2 className="px-4 italic">{original_title}</h2>
+            }
+            <p className="px-4 float-right">{year}</p>
             {genres && genres.length > 0 &&
             <p className="px-4">Genres:  {' '}
               {genres.map((t,i) => <span className="inline">{t}{
@@ -131,6 +138,7 @@ function App() {
             {poster && 
               <img src={poster} className="p-4 max-h-xs text-center m-auto"/>
             }
+            <p className="px-4 text-center mb-4"><a href={"https://www.imdb.com/title/" + imdb_id}>View on IMDB <img src="/imdb_logo.png" className="inline" width="40px" /></a></p>
             <p className="pb-4" >{overview}</p>
           </li>
         )}
