@@ -10,6 +10,7 @@ function App() {
   const [movies, setMovies] = useState([])
   const [filter, setFilter] = useState('')
   const [offset, setOffset] = useState(0)
+  const [showLoader, setShowLoader] = useState(true)
 
   const { ref, inView } = useInView()
 
@@ -107,6 +108,9 @@ function App() {
             if (Boolean(data)) {
               setMovies([...movies, ...data])
               setOffset(newOffset)
+              if (data.length === 0) {
+                setShowLoader(false)
+              }
             }}
           }).catch(error => {
         })
@@ -128,8 +132,14 @@ function App() {
     setFilter(`?search=${filter}`)
   }
 
+  const max36Words = (text) => {
+    const words = text.split(' ')
+    if (words.length <= 36) return text
+    return words.slice(0, 36).join(' ') + '...' 
+  }
+
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto mb-6">
       <header className="App-header">
       <h2 className="text-3xl font-bold text-center text-blue-600 my-6">Our movie database</h2>
       {filters.map(({ text, value }) => (
@@ -156,31 +166,39 @@ function App() {
       <ul className="md:grid grid-col grid-cols-3 gap-6">
         
         {movies.map(({ title, original_title, year, cast, genres, poster, overview, imdb_id }) => 
-          <li className="border border-yellow-400 shadow-lg p-6">
-            <h3 className="px-4 font-semibold text-xl">{title}</h3>
+          <li className="flex flex-col border border-yellow-400 shadow-lg p-6 pb-2">
+            <h3 className="font-semibold text-xl">
+              {title} <span className="font-medium text-gray-500">({year})</span>
+            </h3>
             { title !== original_title && 
-              <h2 className="px-4 italic">{original_title}</h2>
+              <h2 className="italic">{original_title}</h2>
             }
-            <p className="px-4 float-right">{year}</p>
             {genres && genres.length > 0 &&
-            <p className="px-4">Genres:  {' '}
+            <p className="my-2 text-gray-500">
               {genres.map((t,i) => <span className="inline">{t}{
                   i!==genres.length-1 && ', '
               }</span>)}
             </p>}
-            {poster && 
-              <img src={poster} className="p-4 max-h-xs text-center m-auto"/>
-            }
-            <p className="px-4 text-center mb-4">
-              <a href={"https://www.imdb.com/title/" + imdb_id}>
-                View on <img src="/imdb_logo.png" className="inline pb-1 w-10" alt="IMDB" />
-              </a>
-            </p>
-            <p className="pb-4" >{overview}</p>
+            <div className="flex my-5 mt-auto space-x-4">
+              {poster && 
+                <img src={poster} className="w-1/2 text-center m-auto"/>
+              }
+              <p className="flex flex-col text-sm">
+                <span>{max36Words(overview)}</span>
+                <a 
+                  href={"https://www.imdb.com/title/" + imdb_id} 
+                  className="block mt-auto font-semibold text-blue-800 hover:opacity-75"
+                >
+                  View on <img src="/imdb_logo.png" className="inline pb-1 w-10" alt="IMDB" />
+                </a>
+              </p>
+
+            </div>
+
           </li>
         )}
       </ul>
-      {movies.length >= limit &&
+      {movies.length >= limit && showLoader &&
         <div className="p-10 text-center" ref={ref}>Loading...</div>
       }
     </div>
