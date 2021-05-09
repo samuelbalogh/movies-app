@@ -4,7 +4,7 @@ import { DebounceInput } from 'react-debounce-input'
 import { useInView } from 'react-intersection-observer';
 
 
-const ENDPOINT = 'http://localhost:5000/'
+const ENDPOINT = process.env.REACT_APP_API_ENDPOINT
 
 function App() {
   const [movies, setMovies] = useState([])
