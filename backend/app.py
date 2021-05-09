@@ -155,7 +155,8 @@ def get_profit_ratio(movie):
     return profit_ratio
 
 def get_big_budget_movies(movies):
-    pass
+    results = sorted(results, key=lambda movie: movie.get('budget', 0), reverse=True)[:200]
+    return results
 
 
 def get_longest_movies(movies):
@@ -290,7 +291,11 @@ def french():
     movies = paginate(movies, sort=True)
     return jsonify(movies)
 
-
+@app.route("/big-budget")
+def big_budget():
+    movies = get_big_budget_movies(MOVIES)
+    movies = paginate(movies, sort=True)
+    return jsonify(movies)
 
 if __name__ == "__main__":
     app.run(debug=True)
