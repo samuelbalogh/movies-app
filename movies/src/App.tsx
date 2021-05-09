@@ -141,7 +141,7 @@ function App() {
   return (
     <div className="container mx-auto mb-6">
       <header className="App-header">
-      <h2 className="text-3xl font-bold text-center text-blue-600 my-6">Our movie database</h2>
+      <h2 className="text-3xl font-bold text-center text-blue-600 my-6">Super movie database</h2>
       <button 
         className="bg-green-600 p-2 rounded text-white font-medium mb-6 mr-2" 
         onClick={handleFilterChange}
