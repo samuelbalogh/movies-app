@@ -122,7 +122,12 @@ def get_most_popular_movies(movies):
 
 
 def get_unpopular_movies(movies):
-    return sorted(movies, key=get_movie_popularity)
+    results = []
+    for movie in sorted(movies, key=get_movie_popularity):
+        if year := movie.get('year', 0):
+            if int(year) < 2021:
+                results.append(movie)
+    return results
 
 
 def get_movie_popularity(movie):
