@@ -4,6 +4,7 @@
 ##############################################################################################################
 # DON'T WORRY ABOUT THIS PART
 import json
+import random
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
@@ -120,6 +121,10 @@ def get_most_popular_movies(movies):
     return sorted(movies, key=get_movie_popularity, reverse=True)
 
 
+def get_unpopular_movies(movies):
+    return sorted(movies, key=get_movie_popularity)
+
+
 def get_movie_popularity(movie):
     return movie['vote_count']
 
@@ -157,6 +162,12 @@ def get_profit_ratio(movie):
 def get_big_budget_movies(movies):
     results = sorted(movies, key=lambda movie: movie.get('budget', 0), reverse=True)[:200]
     return results
+
+
+def get_random_movies(movies):
+    movies_copy = movies.copy()
+    random.shuffle(movies_copy)
+    return movies_copy
 
 
 def get_longest_movies(movies):
@@ -290,6 +301,21 @@ def french():
     movies = get_french_movies(MOVIES)
     movies = paginate(movies, sort=True)
     return jsonify(movies)
+
+
+@app.route("/random")
+def random_movies():
+    movies = get_random_movies(MOVIES)
+    movies = paginate(movies)
+    return jsonify(movies)
+
+
+@app.route("/unpopular")
+def unpopular_movies():
+    movies = get_unpopular_movies(MOVIES)
+    movies = paginate(movies)
+    return jsonify(movies)
+
 
 @app.route("/big-budget")
 def big_budget():
