@@ -69,7 +69,7 @@ function App() {
 
   useEffect(() => {
     setOffset(0)  // reset offset
-    let url = `${ENDPOINT}${filter}`
+    let url = `${ENDPOINT}${filter}` 
     if (url.indexOf('?') === -1) {
       url = `${url}?offset=0&limit=${limit}`
     } else {
@@ -123,8 +123,8 @@ function App() {
   }, [inView])
 
   const handleFilterChange = (e) => {
-    const filter = `${e.target.dataset.value}`
-    setFilter(filter)
+    const newFilter = `${e.target.dataset.value}`
+    setFilter(newFilter === 'all' ? '' : newFilter)
   }
 
   const handleSearchChange = (e) => {
@@ -142,6 +142,13 @@ function App() {
     <div className="container mx-auto mb-6">
       <header className="App-header">
       <h2 className="text-3xl font-bold text-center text-blue-600 my-6">Our movie database</h2>
+      <button 
+        className="bg-green-600 p-2 rounded text-white font-medium mb-6 mr-2" 
+        onClick={handleFilterChange}
+        data-value="all"
+      >
+        All movies
+      </button>
       {filters.map(({ text, value }) => (
         <button 
           className="bg-blue-600 p-2 rounded text-white font-medium mb-6 mr-2" 
