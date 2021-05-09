@@ -14,7 +14,7 @@ function App() {
 
   const { ref, inView } = useInView()
 
-  const limit = 99
+  const limit = 66
 
   const filters = [
     {
@@ -106,7 +106,7 @@ function App() {
 	      const data = await response.json()
           if (response.ok) {
             if (Boolean(data)) {
-              setMovies([...movies, ...data])
+              setMovies(movies => [...movies, ...data])
               setOffset(newOffset)
               if (data.length === 0) {
                 setShowLoader(false)
