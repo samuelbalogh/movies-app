@@ -3,6 +3,7 @@
 ##############################################################################################################
 ##############################################################################################################
 # DON'T WORRY ABOUT THIS PART
+
 import json
 
 from flask import Flask, jsonify, request
@@ -31,34 +32,7 @@ MOVIES = get_movies()
 ##############################################################################################################
 ##############################################################################################################
 
-
-def get_documentaries(movies):
-    documentaries = []
-    for movie in movies:
-        if 'Documentary' in movie.get('genres', []):
-            documentaries.append(movie)
-    return documentaries
-
-
-def get_dramas(movies):
-    # TODO delete the body
-    dramas = []
-    for movie in movies:
-        if 'Drama' in movie.get('genres', []):
-            dramas.append(movie)
-    return dramas
-
-
-def get_scifis(movies):
-    scifis = []
-    for movie in movies:
-        if 'Science Fiction' in movie.get('genres', []):
-            scifis.append(movie)
-    return scifis
-
-
 def get_70s_movies(movies):
-    # TODO delete the body
     results = []
     for movie in movies:
         if year := movie.get('year', 0):
@@ -67,119 +41,75 @@ def get_70s_movies(movies):
     return results
 
 
+def get_documentaries(movies):
+    return []
+
+def get_dramas(movies):
+    return []
+
+
+def get_scifis(movies):
+    return []
+
+
 def get_80s_movies(movies):
-    # TODO delete the body
-    results = []
-    for movie in movies:
-        if year := movie.get('year', 0):
-            if 1990 > int(year) >= 1980:
-                results.append(movie)
-    return results
+    return []
 
 
 def get_90s_movies(movies):
-    # TODO delete the body
-    results = []
-    for movie in movies:
-        if year := movie.get('year', 0):
-            if 2000 > int(year) >= 1990:
-                results.append(movie)
-    return results
+    return []
 
 
 def search_movies(movies, search_term):
-    # TODO delete body
-    results = []
-    term = search_term.lower()
-    for movie in movies:
-        if term in movie['title'].lower():
-            results.append(movie)
-        elif any([term in person.lower() for person in movie.get('cast', [])]):
-            results.append(movie)
-        elif term in movie.get('genres', []):
-            results.append(movie)
-        elif term == str(movie.get('year')):
-            results.append(movie)
-        elif term in movie.get('original_title', '').lower():
-            results.append(movie)
-    return results
+    return []
+
 
 
 def get_new_movies(movies):
-    results = []
-    for movie in movies:
-        if year := movie.get('year'):
-            if int(year) > 2019:
-                results.append(movie)
-    return results
+    return []
 
 
 def get_most_popular_movies(movies):
-    return sorted(movies, key=get_movie_popularity, reverse=True)
+    return []
 
 
 def get_movie_popularity(movie):
-    return movie['vote_count']
+    return 0
 
 
 def get_most_profitable_movies(movies):
-    results = []
-    for movie in movies:
-        if movie['budget'] != 0:
-            profit_ratio = movie['revenue'] / movie['budget']
-            if profit_ratio > 10:
-                results.append(movie)
-
-    results = sorted(results, key=get_profit_ratio, reverse=True)[:100]
-    return results
+    return []
 
 
 def get_highest_grossing_movies(movies):
-    results = sorted(movies, key=get_revenue, reverse=True)
-    return results
+    return []
 
 
 def get_revenue(movie):
-    return movie['revenue']
+    return 0
 
 
 def get_profit_ratio(movie):
-    profit_ratio = 0
-    if movie['budget']:
-        profit_ratio = movie['revenue'] / movie['budget']
-        if profit_ratio > 1000:
-            # something wrong here! Probably the budget value is incorrect
-            return 0
-    return profit_ratio
+    return 0
 
 def get_big_budget_movies(movies):
     pass
 
 
 def get_longest_movies(movies):
-    result = sorted(movies, key=get_movie_length, reverse=True)[:10]
-    return result
+    return []
 
 
 def get_movie_length(movie):
-    runtime = 0
-    if movie['runtime']:
-        runtime = movie['runtime']
-
-    return runtime
+    return 0
 
 
 def get_french_movies(movies):
-    return get_movies_from_country(movies, 'FR')
+    return []
 
 
 def get_movies_from_country(movies, country):
-    results = []
-    for movie in movies:
-        if len(country_data := movie['production_countries']) == 1:
-            if country_data[0]['iso_3166_1'] == country:
-                results.append(movie)
-    return results
+    return []
 
 
 ##############################################################################################################
@@ -187,7 +117,7 @@ def get_movies_from_country(movies, country):
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
-
+# DONT WORRY ABOUT THE PARTS BELOW
 
 def paginate(movies, sort=False):
     if sort:
