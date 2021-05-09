@@ -65,6 +65,14 @@ function App() {
       text: 'French movies',
       value: 'french'
     },
+    {
+      text: 'Random movies',
+      value: 'random'
+    },
+    {
+      text: 'Unpopular movies',
+      value: 'unpopular'
+    },
   ]
 
   useEffect(() => {
