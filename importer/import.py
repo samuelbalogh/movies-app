@@ -22,7 +22,7 @@ BASE_URL = 'https://image.tmdb.org/t/p'
 
 MOVIE_ENDPOINT = "https://api.themoviedb.org/3/movie"
 
-MOVIES_TO_FETCH = 10000
+MOVIES_TO_FETCH = 100000
 
 
 def download_file_dump():
@@ -55,10 +55,9 @@ def get_all_movies():
 
     print('preparing thread pool...')
 
-    # movie_id: cast_url
     actors = {}
 
-    with ThreadPoolExecutor(max_workers=20) as movie_executor:
+    with ThreadPoolExecutor(max_workers=30) as movie_executor:
         future_to_url = {movie_executor.submit(load_url, movie['url']): movie['url'] for movie in urls}
         movies_fetched = 0
         for future in as_completed(future_to_url):
@@ -86,7 +85,9 @@ def get_all_movies():
                 print(e)
                 continue
 
-    with ThreadPoolExecutor(max_workers=20) as actor_executor:
+    print('preparing thread pool for actors...')
+
+    with ThreadPoolExecutor(max_workers=30) as actor_executor:
         cast_counter = 0
         future_to_movie_id = {actor_executor.submit(load_url, cast_url): movie_id for movie_id, cast_url in actors.items()}
         for future in as_completed(future_to_movie_id):
@@ -97,14 +98,16 @@ def get_all_movies():
                 for movie in all_movies:
                     if movie['id'] == movie_id:
                         movie['cast'] = [actor['name'] for actor in data['cast']]
+                        movie['crew'] = [crew['name'] for crew in data['crew']]
 
-                print(f'{cast_counter} pieces of cast info fetched')
+                if cast_counter % 10 == 0:
+                    print(f'{cast_counter} pieces of cast info fetched')
             except Exception as e:
                 print(e)
                 continue
 
     print('writing movies to json file...')
-    with open('result.json', 'w') as result_file:
+    with open(f'result_{MOVIES_TO_FETCH}.json', 'w') as result_file:
         json.dump(all_movies, result_file)
 
 if __name__ == "__main__":
