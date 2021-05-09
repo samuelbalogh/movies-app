@@ -102,6 +102,8 @@ def search_movies(movies, search_term):
             results.append(movie)
         elif term in movie.get('original_title', '').lower():
             results.append(movie)
+        elif term in [person.lower() for person in movie.get('crew', [])]:
+            results.append(movie)
     return results
 
 
