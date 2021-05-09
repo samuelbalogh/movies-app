@@ -14,7 +14,7 @@ function App() {
 
   const { ref, inView } = useInView()
 
-  const limit = 33
+  const limit = 99
 
   const filters = [
     {
