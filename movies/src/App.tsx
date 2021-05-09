@@ -4,7 +4,7 @@ import { DebounceInput } from 'react-debounce-input'
 import { useInView } from 'react-intersection-observer';
 
 
-const ENDPOINT = process.env.REACT_APP_API_ENDPOINT
+const ENDPOINT = Boolean(process.env.REACT_APP_API_ENDPOINT) === false ? 'http://localhost:5000/' : process.env.REACT_APP_API_ENDPOINT 
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -161,7 +161,7 @@ function App() {
 
       <DebounceInput
         className="p-3 m-2 border border-yellow-400 shadow"
-        placeholder='Search'
+        placeholder='Search by title, actor, etc...'
         minLength={2}
         debounceTimeout={300}
         onChange={handleSearchChange}
