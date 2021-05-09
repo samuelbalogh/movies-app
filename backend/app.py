@@ -155,7 +155,7 @@ def get_profit_ratio(movie):
     return profit_ratio
 
 def get_big_budget_movies(movies):
-    results = sorted(results, key=lambda movie: movie.get('budget', 0), reverse=True)[:200]
+    results = sorted(movies, key=lambda movie: movie.get('budget', 0), reverse=True)[:200]
     return results
 
 
