@@ -4,7 +4,6 @@
 ##############################################################################################################
 # DON'T WORRY ABOUT THIS PART
 import json
-import random
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
@@ -14,7 +13,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-DATASET = "../importer/result_10000.json"
+DATASET = "../importer/result_100000.json"
 
 
 def get_movies():
@@ -23,7 +22,7 @@ def get_movies():
     return data
 
 
-MOVIES = get_movies()[:10000]
+MOVIES = get_movies()
 
 ##############################################################################################################
 ##############################################################################################################
@@ -100,6 +99,8 @@ def search_movies(movies, search_term):
         elif term in movie.get('genres', []):
             results.append(movie)
         elif term == str(movie.get('year')):
+            results.append(movie)
+        elif term in movie.get('original_title', '').lower():
             results.append(movie)
     return results
 

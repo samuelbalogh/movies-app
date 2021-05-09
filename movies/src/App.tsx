@@ -1,15 +1,19 @@
-import React, {useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { DebounceInput } from 'react-debounce-input'
+import { useInView } from 'react-intersection-observer';
+
 
 const ENDPOINT = 'http://localhost:5000/'
 
 function App() {
   const [movies, setMovies] = useState([])
   const [filter, setFilter] = useState('')
+  const [offset, setOffset] = useState(0)
 
-  const limit = 100
-  const offset = 0
+  const { ref, inView } = useInView()
+
+  const limit = 33
 
   const filters = [
     {
@@ -63,11 +67,12 @@ function App() {
   ]
 
   useEffect(() => {
+    setOffset(0)  // reset offset
     let url = `${ENDPOINT}${filter}`
-    if (url.indexOf('?') == -1) {
-      url = `${url}?offset=${offset}&limit=${limit}`
+    if (url.indexOf('?') === -1) {
+      url = `${url}?offset=0&limit=${limit}`
     } else {
-      url = `${url}&offset=${offset}&limit=${limit}`
+      url = `${url}&offset=0&limit=${limit}`
     }
     fetch(url, {
         credentials: 'same-origin',
@@ -84,6 +89,34 @@ function App() {
           console.error(error)
         })
   }, [filter])
+
+  const loadMoreMovies = useCallback(() => {
+    const newOffset = offset + limit
+    let url = `${ENDPOINT}${filter}`
+    if (url.indexOf('?') === -1) {
+      url = `${url}?offset=${newOffset}&limit=${limit}`
+    } else {
+      url = `${url}&offset=${newOffset}&limit=${limit}`
+    }
+    fetch(url, {
+        credentials: 'same-origin',
+      })
+      .then(async response => {
+	      const data = await response.json()
+          if (response.ok) {
+            if (Boolean(data)) {
+              setMovies([...movies, ...data])
+              setOffset(newOffset)
+            }}
+          }).catch(error => {
+        })
+  }, [offset, filter])
+
+  useEffect(() => {
+    if (inView) {
+      loadMoreMovies()
+    }
+  }, [inView])
 
   const handleFilterChange = (e) => {
     const filter = `${e.target.dataset.value}`
@@ -120,11 +153,11 @@ function App() {
       />
 
       </header>
-      <ul className="md:grid grid-col grid-cols-3 gap-4">
+      <ul className="md:grid grid-col grid-cols-3 gap-6">
         
         {movies.map(({ title, original_title, year, cast, genres, poster, overview, imdb_id }) => 
-          <li className="border border-yellow-200 shadow pl-12 pr-12 pt-2">
-            <h3 className="px-4 font-semibold">{title}</h3>
+          <li className="border border-yellow-400 shadow-lg p-6">
+            <h3 className="px-4 font-semibold text-xl">{title}</h3>
             { title !== original_title && 
               <h2 className="px-4 italic">{original_title}</h2>
             }
@@ -138,11 +171,18 @@ function App() {
             {poster && 
               <img src={poster} className="p-4 max-h-xs text-center m-auto"/>
             }
-            <p className="px-4 text-center mb-4"><a href={"https://www.imdb.com/title/" + imdb_id}>View on IMDB <img src="/imdb_logo.png" className="inline" width="40px" /></a></p>
+            <p className="px-4 text-center mb-4">
+              <a href={"https://www.imdb.com/title/" + imdb_id}>
+                View on <img src="/imdb_logo.png" className="inline pb-1 w-10" alt="IMDB" />
+              </a>
+            </p>
             <p className="pb-4" >{overview}</p>
           </li>
         )}
       </ul>
+      {movies.length >= limit &&
+        <div className="p-10 text-center" ref={ref}>Loading...</div>
+      }
     </div>
   );
 }
