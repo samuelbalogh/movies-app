@@ -8,10 +8,18 @@ function App() {
   const [movies, setMovies] = useState([])
   const [filter, setFilter] = useState('')
 
-  const limit = 200
+  const limit = 100
   const offset = 0
 
   const filters = [
+    {
+      text: 'Most popular movies',
+      value: 'popular'
+    },
+    {
+      text: '70s movies',
+      value: '70s'
+    },
     {
       text: '80s movies',
       value: '80s'
@@ -32,12 +40,22 @@ function App() {
       text: 'New movies',
       value: 'new'
     },   
-
     {
       text: 'Science-fiction movies',
       value: 'sci-fi'
     },
-    
+    {
+      text: 'Big budget movies',
+      value: 'big-budget'
+    },
+    {
+      text: 'Most profitable movies',
+      value: 'profitable'
+    },
+    {
+      text: 'Highest grossing movies',
+      value: 'grossing'
+    },
   ]
 
   useEffect(() => {
@@ -88,7 +106,7 @@ function App() {
       ))}
 
       <DebounceInput
-        className="p-3 m-2"
+        className="p-3 m-2 border border-yellow-400 shadow"
         placeholder='Search'
         minLength={2}
         debounceTimeout={300}
@@ -101,7 +119,7 @@ function App() {
       <ul className="md:grid grid-col grid-cols-3 gap-4">
         
         {movies.map(({ title, year, cast, genres, poster, overview }) => 
-          <li className="border border-yellow-200 shadow">
+          <li className="border border-yellow-200 shadow pl-12 pr-12 pt-2">
             <h3 className="px-4 font-semibold">{title}</h3>
             <p className="px-4">{year}</p>
             {genres && genres.length > 0 &&
@@ -111,9 +129,9 @@ function App() {
               }</span>)}
             </p>}
             {poster && 
-              <img src={poster} className="p-4 w-50"/>
+              <img src={poster} className="p-4 max-h-xs text-center m-auto"/>
             }
-            <p className="p-6" >{overview}</p>
+            <p className="pb-4" >{overview}</p>
           </li>
         )}
       </ul>
