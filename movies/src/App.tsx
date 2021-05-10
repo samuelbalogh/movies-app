@@ -73,6 +73,10 @@ function App() {
       text: 'Unpopular movies',
       value: 'unpopular'
     },
+    {
+      text: 'Lowest rated movies',
+      value: 'worst'
+    },
   ]
 
   useEffect(() => {

@@ -151,6 +151,16 @@ def get_highest_grossing_movies(movies):
     return results
 
 
+def get_worst_movies(movies):
+    results = []
+    for movie in sorted(movies, key=lambda movie: float(movie.get('vote_average', 10))):
+        if int(movie.get('vote_count', 0)) < 120:
+            continue
+        if year := movie.get('year', 0):
+            if int(year) < 2021:
+                results.append(movie)
+    return results
+
 def get_revenue(movie):
     return movie['revenue']
 
@@ -326,6 +336,12 @@ def unpopular_movies():
 def big_budget():
     movies = get_big_budget_movies(MOVIES)
     movies = paginate(movies, sort=True)
+    return jsonify(movies)
+
+@app.route("/worst")
+def worst():
+    movies = get_worst_movies(MOVIES)
+    movies = paginate(movies)
     return jsonify(movies)
 
 if __name__ == "__main__":
