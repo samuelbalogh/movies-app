@@ -18,7 +18,7 @@ function App() {
 
   const filters = [
     {
-      text: 'Most popular movies',
+      text: 'Most popular',
       value: 'popular'
     },
     {
@@ -46,19 +46,19 @@ function App() {
       value: 'new'
     },   
     {
-      text: 'Science-fiction movies',
+      text: 'Science-fiction',
       value: 'sci-fi'
     },
     {
-      text: 'Big budget movies',
+      text: 'Big budget',
       value: 'big-budget'
     },
     {
-      text: 'Most profitable movies',
+      text: 'Most profitable',
       value: 'profitable'
     },
     {
-      text: 'Highest grossing movies',
+      text: 'Highest grossing',
       value: 'grossing'
     },
     {
