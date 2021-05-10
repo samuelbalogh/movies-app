@@ -5,7 +5,7 @@ import { DebounceInput } from 'react-debounce-input'
 import { useInView } from 'react-intersection-observer';
 
 
-const ENDPOINT = Boolean(process.env.REACT_APP_API_ENDPOINT) === false ? 'https://movies.samu.space/' : process.env.REACT_APP_API_ENDPOINT 
+const ENDPOINT = Boolean(process.env.REACT_APP_API_ENDPOINT) === false ? 'https://movies.samu.space/api/' : process.env.REACT_APP_API_ENDPOINT 
 
 function App() {
   const [movies, setMovies] = useState([])
