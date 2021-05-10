@@ -79,7 +79,7 @@ function App() {
     {
       text: 'Unpopular movies',
       value: 'unpopular',
-      tooltip: 'Movies with fewest ratings'
+      tooltip: 'Movies with the fewest ratings'
     },
     {
       text: 'Lowest rated movies',
