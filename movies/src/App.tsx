@@ -176,9 +176,8 @@ function App() {
           onClick={handleFilterChange}
           data-value={value}
           data-tip={tooltip}
-          data-delay-show="300"
-          data-type="info"
-          data-background-color="gray"
+          data-delay-show="700"
+          data-type="light"
           data-border="true"
         >
           {text}
