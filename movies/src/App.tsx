@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+import ReactTooltip from 'react-tooltip';
 import { DebounceInput } from 'react-debounce-input'
 import { useInView } from 'react-intersection-observer';
 
@@ -19,7 +20,8 @@ function App() {
   const filters = [
     {
       text: 'Most popular',
-      value: 'popular'
+      value: 'popular',
+      tooltip: 'Movies with the most votes'
     },
     {
       text: '70s movies',
@@ -51,31 +53,38 @@ function App() {
     },
     {
       text: 'Big budget',
-      value: 'big-budget'
+      value: 'big-budget',
+      tooltip: 'Movies with a large budget'
     },
     {
       text: 'Most profitable',
-      value: 'profitable'
+      value: 'profitable',
+      tooltip: 'Movies with the highest revenue/budget ratio'
     },
     {
       text: 'Highest grossing',
-      value: 'grossing'
+      value: 'grossing',
+      tooltip: 'Highest grossing movies'
     },
     {
       text: 'French movies',
-      value: 'french'
+      value: 'french',
+      tooltip: 'Movies produced in France'
     },
     {
       text: 'Random movies',
-      value: 'random'
+      value: 'random',
+      tooltip: 'Randomly selected movies'
     },
     {
       text: 'Unpopular movies',
-      value: 'unpopular'
+      value: 'unpopular',
+      tooltip: 'Movies with fewest ratings'
     },
     {
       text: 'Lowest rated movies',
-      value: 'worst'
+      value: 'worst',
+      tooltip: 'Movies with lowest average rating'
     },
   ]
 
@@ -161,11 +170,16 @@ function App() {
       >
         All movies
       </button>
-      {filters.map(({ text, value }) => (
+      {filters.map(({ text, value, tooltip }) => (
         <button 
           className="bg-blue-600 p-2 rounded text-white font-medium mb-6 mr-2" 
           onClick={handleFilterChange}
           data-value={value}
+          data-tip={tooltip}
+          data-delay-show="300"
+          data-type="info"
+          data-background-color="gray"
+          data-border="true"
         >
           {text}
         </button>
@@ -220,6 +234,7 @@ function App() {
       {movies.length >= limit && showLoader &&
         <div className="p-10 text-center" ref={ref}>Loading...</div>
       }
+      <ReactTooltip />
     </div>
   );
 }
