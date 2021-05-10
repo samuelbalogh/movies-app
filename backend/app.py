@@ -14,16 +14,20 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-DATASET = "result_10000.json"
+FILES = [f'result_0{i}.json' for i in range (1, 6)]
 
 
 def get_movies():
-    with open(DATASET, 'r') as dataset:
-        data = json.load(dataset)
-    return data
+    full_dataset = []
+    for file_ in FILES:
+        with open(file_, 'r') as dataset:
+            data = json.load(dataset)
+            full_dataset.extend(data)
+    return full_dataset
 
 
 MOVIES = get_movies()
+print(f'We have a dataset of {len(MOVIES)} movies...')
 
 ##############################################################################################################
 ##############################################################################################################
