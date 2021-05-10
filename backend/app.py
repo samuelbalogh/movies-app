@@ -14,16 +14,22 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-DATASET = "result_10000.json"
+FILES = [f'../importer/result_100000_{i}.json' for i in range(1, 4)]
 
 
 def get_movies():
-    with open(DATASET, 'r') as dataset:
-        data = json.load(dataset)
-    return data
+    results = []
+    for file_ in FILES:
+        with open(file_, 'r') as dataset:
+            data = json.load(dataset)
+            results.extend(data)
+    return results
 
 
-MOVIES = get_movies()
+ALL_MOVIES = get_movies()
+print(f'Length of the whole movie dataset is {len(ALL_MOVIES)}...')
+MOVIES = ALL_MOVIES[:10000]
+print(f'Length of the smaller movie dataset is {len(MOVIES)}...')
 
 ##############################################################################################################
 ##############################################################################################################
@@ -92,19 +98,29 @@ def search_movies(movies, search_term):
     # TODO delete body
     results = []
     term = search_term.lower()
-    for movie in movies:
-        if term in movie['title'].lower():
-            results.append(movie)
-        elif any([term in person.lower() for person in movie.get('cast', [])]):
-            results.append(movie)
-        elif term in movie.get('genres', []):
-            results.append(movie)
-        elif term == str(movie.get('year')):
-            results.append(movie)
-        elif term in movie.get('original_title', '').lower():
-            results.append(movie)
-        elif term in [person.lower() for person in movie.get('crew', [])]:
-            results.append(movie)
+    country_code = None
+    if term.startswith('country:'):
+        country_code = term.split(':')[1]
+        for movie in movies:
+            if len(country_data := movie['production_countries']) == 1:
+                if country_data[0]['iso_3166_1'].lower() == country_code:
+                    results.append(movie)
+                    print(movie)
+                    continue
+    else:
+        for movie in movies:
+            if term in movie['title'].lower():
+                results.append(movie)
+            elif any([term in person.lower() for person in movie.get('cast', [])]):
+                results.append(movie)
+            elif term in movie.get('genres', []):
+                results.append(movie)
+            elif term == str(movie.get('year')):
+                results.append(movie)
+            elif term in movie.get('original_title', '').lower():
+                results.append(movie)
+            elif term in [person.lower() for person in movie.get('crew', [])]:
+                results.append(movie)
     return results
 
 
@@ -223,6 +239,8 @@ def paginate(movies, sort=False):
         movies = sorted(movies, key=lambda movie: movie['vote_count'], reverse=True)
     offset = request.args.get('offset')
     limit = request.args.get('limit')
+    if not limit:
+        limit = 100
     if offset and limit:
         offset = int(offset)
         limit = int(limit)
@@ -235,6 +253,7 @@ def paginate(movies, sort=False):
 def index():
     movies = MOVIES
     if (search_term := request.args.get('search')) is not None:
+        movies = ALL_MOVIES
         movies = search_movies(movies, search_term)
 
     movies = paginate(movies)
