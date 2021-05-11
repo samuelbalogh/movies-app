@@ -113,7 +113,7 @@ def search_movies(movies, search_term):
                 results.append(movie)
             elif any([term in person.lower() for person in movie.get('cast', [])]):
                 results.append(movie)
-            elif term in movie.get('genres', []):
+            elif term in [genre.lower() for genre in movie.get('genres', [])]:
                 results.append(movie)
             elif term == str(movie.get('year')):
                 results.append(movie)
