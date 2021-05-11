@@ -238,14 +238,17 @@ def paginate(movies, sort=False):
     if sort:
         movies = sorted(movies, key=lambda movie: movie['vote_count'], reverse=True)
     offset = request.args.get('offset')
+
+    if not offset:
+        offset = 0
+    offset = int(offset)
+
     limit = request.args.get('limit')
     if not limit:
         limit = 100
-    if offset and limit:
-        offset = int(offset)
-        limit = int(limit)
-        return movies[offset: offset+limit]
-    return movies
+    limit = int(limit)
+
+    return movies[offset: offset+limit]
 
 
 @app.route("/")
