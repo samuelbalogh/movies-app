@@ -2,7 +2,7 @@
 
 Fantastic movies app.
 
-Importer / backend / frontend in one repo. 
+Data importer, backend and frontend in a single repo. 
 
 Large JSON files loaded into memory. 
 
