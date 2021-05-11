@@ -186,7 +186,7 @@ function App() {
 
       <DebounceInput
         className="p-3 m-2 border border-yellow-400 shadow"
-        placeholder='Search by title, actor, etc...'
+        placeholder='Search by year, actor, title, etc...'
         minLength={2}
         debounceTimeout={300}
         onChange={handleSearchChange}
