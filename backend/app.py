@@ -35,7 +35,8 @@ MOVIES = get_movies()
 def get_70s_movies(movies):
     results = []
     for movie in movies:
-        if year := movie.get('year', 0):
+        year = movie['year']
+        if year:
             if 1980 > int(year) >= 1970:
                 results.append(movie)
     return results
