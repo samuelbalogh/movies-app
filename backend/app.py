@@ -14,7 +14,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-DATASET = "../importer/result_100000.json"
+DATASET = "../result_10000.json"
 
 
 def get_movies():
