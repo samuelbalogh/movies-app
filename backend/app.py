@@ -105,7 +105,7 @@ def search_movies(movies, search_term):
     if term.startswith('country:'):
         country_code = term.split(':')[1]
         for movie in movies:
-            for country in country_data := movie['production_countries']:
+            for country in movie['production_countries']:
                 if country['iso_3166_1'].lower() == country_code:
                     results.append(movie)
                     break
