@@ -149,7 +149,7 @@ def get_unpopular_movies(movies):
 
 
 def get_movie_popularity(movie):
-    return movie['vote_count']
+    return movie['vote_count'] * movie['vote_average']
 
 
 def get_most_profitable_movies(movies):
