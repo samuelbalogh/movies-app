@@ -185,7 +185,7 @@ function App() {
       ))}
 
       <DebounceInput
-        className="p-3 m-2 border border-yellow-400 shadow"
+        className="p-3 m-2 border border-yellow-400 shadow w-72"
         placeholder='Search by year, actor, title, etc...'
         minLength={2}
         debounceTimeout={300}
