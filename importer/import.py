@@ -22,7 +22,7 @@ BASE_URL = 'https://image.tmdb.org/t/p'
 
 MOVIE_ENDPOINT = "https://api.themoviedb.org/3/movie"
 
-MOVIES_TO_FETCH = 100000
+MOVIES_TO_FETCH = 50000
 
 
 def download_file_dump():
@@ -71,8 +71,6 @@ def get_all_movies():
                 actors[data['id']] = cast_url
 
                 movies_fetched += 1
-
-                data['cast'] = actors
 
                 data['poster'] = f'{BASE_URL}/w200/{data["poster_path"]}'
                 data['genres'] = [i['name'] for i in data['genres']]

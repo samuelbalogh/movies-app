@@ -105,24 +105,23 @@ def search_movies(movies, search_term):
     if term.startswith('country:'):
         country_code = term.split(':')[1]
         for movie in movies:
-            if len(country_data := movie['production_countries']) == 1:
-                if country_data[0]['iso_3166_1'].lower() == country_code:
+            for country in country_data := movie['production_countries']:
+                if country['iso_3166_1'].lower() == country_code:
                     results.append(movie)
-                    print(movie)
-                    continue
+                    break
     else:
         for movie in movies:
             if term in movie['title'].lower():
                 results.append(movie)
             elif any([term in person.lower() for person in movie.get('cast', [])]):
                 results.append(movie)
-            elif term in [genre.lower() for genre in movie.get('genres', [])]:
+            elif any([term in genre.lower() for genre in movie.get('genres', [])]):
                 results.append(movie)
             elif term == str(movie.get('year')):
                 results.append(movie)
             elif term in movie.get('original_title', '').lower():
                 results.append(movie)
-            elif term in [person.lower() for person in movie.get('crew', [])]:
+            elif any([term in person.lower() for person in movie.get('crew', [])]):
                 results.append(movie)
     return results
 
