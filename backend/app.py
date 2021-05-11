@@ -22,10 +22,6 @@ def get_movies():
     for file_ in FILES:
         with open(file_, 'r') as dataset:
             data = json.load(dataset)
-            for movie in data:
-                if len(movie['cast']) > 1000:
-                    # delete in place
-                    del movie['cast']
             results.extend(data)
     return results
 
