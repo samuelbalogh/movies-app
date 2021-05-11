@@ -22,6 +22,9 @@ def get_movies():
     for file_ in FILES:
         with open(file_, 'r') as dataset:
             data = json.load(dataset)
+            for movie in data:
+                if len(data.get('cast', [])) > 50:
+                    data['cast'] = data['cast'][:50]
             results.extend(data)
     return results
 
