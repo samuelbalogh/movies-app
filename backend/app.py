@@ -14,7 +14,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-FILES = [f'../importer/result_100000_{i}.json' for i in range(1, 6)]
+FILES = [f'../importer/result_100000_{i}.json' for i in range(1, 7)]
 
 
 def get_movies():
