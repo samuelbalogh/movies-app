@@ -19,7 +19,7 @@ MOVIES_ENV = os.getenv('MOVIES_ENV')
 if MOVIES_ENV == 'staging':
    CHUNKS_TO_LOAD = 1
 
-FILES = [f'../importer/result_100000_{i}.json' for i in range(1, 1 + CHUNKS_TO_LOAD)]
+FILES = [f'result_100000_{i}.json' for i in range(1, 1 + CHUNKS_TO_LOAD)]
 
 def get_movies():
     results = []
