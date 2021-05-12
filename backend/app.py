@@ -3,6 +3,7 @@
 ##############################################################################################################
 ##############################################################################################################
 # DON'T WORRY ABOUT THIS PART
+import os
 import json
 import random
 
@@ -14,8 +15,11 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-FILES = [f'../importer/result_100000_{i}.json' for i in range(1, 7)]
+MOVIES_ENV = os.getenv('MOVIES_ENV')
+if MOVIES_ENV == 'staging':
+   CHUNKS_TO_LOAD = 1
 
+FILES = [f'../importer/result_100000_{i}.json' for i in range(1, 1 + CHUNKS_TO_LOAD)]
 
 def get_movies():
     results = []
