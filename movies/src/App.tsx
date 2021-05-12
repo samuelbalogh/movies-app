@@ -164,7 +164,7 @@ function App() {
       <header className="App-header">
       <h2 className="text-3xl font-bold text-center text-blue-600 my-6">Super movie database</h2>
       <button 
-        className="bg-green-600 p-2 rounded text-white font-medium mb-6 mr-2" 
+        className="bg-green-500 p-2 rounded text-white font-medium mb-6 mr-2" 
         onClick={handleFilterChange}
         data-value="all"
       >
@@ -217,6 +217,9 @@ function App() {
               }
               <p className="flex flex-col text-sm">
                 <span>{max36Words(overview)}</span>
+                <span className="mt-3">
+                  Cast: {cast.map((t, i) => <span>{i < 4 && t}{i < 3 && ', '}</span>)}
+                </span>
                 <a 
                   href={"https://www.imdb.com/title/" + imdb_id} 
                   className="block mt-auto font-semibold text-blue-800 hover:opacity-75"
