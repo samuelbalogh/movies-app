@@ -163,8 +163,9 @@ function App() {
     <div className="container mx-auto mb-6">
       <header className="App-header">
       <h2 className="text-3xl font-bold text-center text-blue-600 my-6">Super movie database</h2>
+      <h3 className="text-xl text-center italic my-4">Read up about 60 000 movies</h3>
       <button 
-        className="bg-green-500 p-2 rounded text-white font-medium mb-6 mr-2" 
+        className="bg-green-500 p-2 rounded text-white font-medium mb-4 mr-2" 
         onClick={handleFilterChange}
         data-value="all"
       >
@@ -172,7 +173,7 @@ function App() {
       </button>
       {filters.map(({ text, value, tooltip }) => (
         <button 
-          className={`bg-blue-600 p-2 rounded text-white font-medium mb-6 mr-2 focus:outline-none border-4 border-white
+          className={`bg-blue-600 p-2 rounded text-white font-medium mb-4 mr-2 focus:outline-none border-4 border-white
             ${value === filter ? 'border-yellow-300' : ''}`} 
           onClick={handleFilterChange}
           data-value={value}
