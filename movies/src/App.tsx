@@ -172,13 +172,13 @@ function App() {
       </button>
       {filters.map(({ text, value, tooltip }) => (
         <button 
-          className="bg-blue-600 p-2 rounded text-white font-medium mb-6 mr-2" 
+          className={`bg-blue-600 p-2 rounded text-white font-medium mb-6 mr-2 focus:outline-none border-4 border-white
+            ${value === filter ? 'border-yellow-300' : ''}`} 
           onClick={handleFilterChange}
           data-value={value}
           data-tip={tooltip}
           data-delay-show="700"
           data-type="light"
-          data-border="true"
         >
           {text}
         </button>
