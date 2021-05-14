@@ -14,6 +14,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+CHUNKS_TO_LOAD = 6
 
 MOVIES_ENV = os.getenv('MOVIES_ENV')
 if MOVIES_ENV == 'staging':
