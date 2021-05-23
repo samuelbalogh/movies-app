@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import ReactTooltip from 'react-tooltip';
-import { DebounceInput } from 'react-debounce-input'
 import { useInView } from 'react-intersection-observer';
+
+import Filters from './components/filters'
 
 
 const ENDPOINT = Boolean(process.env.REACT_APP_API_ENDPOINT) === false ? 'http://localhost:5000/' : process.env.REACT_APP_API_ENDPOINT 
@@ -16,77 +16,6 @@ function App() {
   const { ref, inView } = useInView()
 
   const limit = 66
-
-  const filters = [
-    {
-      text: 'Most popular',
-      value: 'popular',
-      tooltip: 'Movies with the most votes'
-    },
-    {
-      text: '70s movies',
-      value: '70s'
-    },
-    {
-      text: '80s movies',
-      value: '80s'
-    },
-    {
-      text: '90s movies',
-      value: '90s'
-    },
-    {
-      text: 'Dramas',
-      value: 'dramas'
-    },
-    {
-      text: 'Documentaries',
-      value: 'documentaries'
-    },
-    {
-      text: 'New movies',
-      value: 'new'
-    },   
-    {
-      text: 'Science-fiction',
-      value: 'sci-fi'
-    },
-    {
-      text: 'Big budget',
-      value: 'big-budget',
-      tooltip: 'Movies with a large budget'
-    },
-    {
-      text: 'Most profitable',
-      value: 'profitable',
-      tooltip: 'Movies with the highest revenue/budget ratio'
-    },
-    {
-      text: 'Highest grossing',
-      value: 'grossing',
-      tooltip: 'Highest grossing movies'
-    },
-    {
-      text: 'French movies',
-      value: 'french',
-      tooltip: 'Movies produced in France'
-    },
-    {
-      text: 'Random movies',
-      value: 'random',
-      tooltip: 'Randomly selected movies'
-    },
-    {
-      text: 'Unpopular movies',
-      value: 'unpopular',
-      tooltip: 'Movies with the fewest ratings'
-    },
-    {
-      text: 'Lowest rated movies',
-      value: 'worst',
-      tooltip: 'Movies with lowest average rating'
-    },
-  ]
 
   useEffect(() => {
     setOffset(0)  // reset offset
@@ -164,37 +93,7 @@ function App() {
       <header className="App-header">
       <h2 className="text-3xl font-bold text-center text-blue-600 my-6">Super movie database</h2>
       <h3 className="text-xl text-center italic my-4">Read up about 60 000 movies</h3>
-      <button 
-        className="bg-green-500 p-2 rounded text-white font-medium mb-4 mr-2" 
-        onClick={handleFilterChange}
-        data-value="all"
-      >
-        All movies
-      </button>
-      {filters.map(({ text, value, tooltip }) => (
-        <button 
-          className={`bg-blue-600 p-2 rounded text-white font-medium mb-4 mr-2 focus:outline-none border-4 border-white
-            ${value === filter ? 'border-yellow-300' : ''}`} 
-          onClick={handleFilterChange}
-          data-value={value}
-          data-tip={tooltip}
-          data-delay-show="700"
-          data-type="light"
-        >
-          {text}
-        </button>
-      ))}
-
-      <DebounceInput
-        className="p-3 m-2 border border-yellow-400 shadow w-72"
-        placeholder='Search by year, actor, title, etc...'
-        minLength={2}
-        debounceTimeout={300}
-        onChange={handleSearchChange}
-        value={filter.match(/search=.+/g) ? filter.match(/(search=)(.+)/)[2] : ''}
-        onKeyPress={e => { if (e.key === 'Enter') { e.preventDefault() } }}
-      />
-
+      <Filters onChange={handleFilterChange} filter={filter} onSearch={handleSearchChange} />
       </header>
       <ul className="md:grid grid-col grid-cols-3 gap-6">
         
@@ -237,7 +136,6 @@ function App() {
       {movies.length >= limit && showLoader &&
         <div className="p-10 text-center" ref={ref}>Loading...</div>
       }
-      <ReactTooltip />
     </div>
   );
 }
