@@ -24,7 +24,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix src"
   },
   "eslintConfig": {
     "extends": [
@@ -47,7 +48,8 @@
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.1.2",
     "autoprefixer": "^9.8.6",
-    "postcss": "^8.0.0"
+    "postcss": "^8.0.0",
+    "prettier": "^2.3.0"
   },
   "peerDependencies": {
     "postcss": "^8.0.0"
