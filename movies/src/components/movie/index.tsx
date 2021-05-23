@@ -29,6 +29,13 @@ export default function Movie(movie) {
     setIsFav(true)
   }
 
+  function removeFromFavorites() {
+    const favoritesInLocalStorage = JSON.parse(localStorage.getItem('favoriteMovies')) || []
+    const favoriteMovies = favoritesInLocalStorage.filter(m => m.id !== movie.id)
+    localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies))
+    setIsFav(false)
+  }
+
   function isInLocalStorage() {
     const favoritesInLocalStorage = JSON.parse(localStorage.getItem('favoriteMovies')) || []
     return favoritesInLocalStorage.some(favorite => favorite.id === movie.id)
@@ -42,7 +49,7 @@ export default function Movie(movie) {
       {title !== original_title && <h2 className="italic">{original_title}</h2>}
       <button 
 	className={`absolute top-1 right-1 p-1 focus:outline-none ${isFav ? "text-red-500" : "text-gray-300"} hover:text-red-500`}
-	onClick={addToFavorites}
+	onClick={isFav ? removeFromFavorites : addToFavorites}
 	>
       	<Heart fill="currentColor"/>
         <span className="sr-only" >Add to favorites</span>
