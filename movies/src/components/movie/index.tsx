@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { Heart } from 'react-feather';
+import { Heart } from "react-feather";
 
 const max36Words = (text) => {
   const words = text.split(" ");
@@ -9,7 +9,7 @@ const max36Words = (text) => {
 };
 
 export default function Movie(movie) {
-  const {  
+  const {
     title,
     original_title,
     year,
@@ -18,27 +18,32 @@ export default function Movie(movie) {
     poster,
     overview,
     imdb_id,
-  } = movie
+  } = movie;
 
-  const [isFav, setIsFav] = useState(isInLocalStorage)
+  const [isFav, setIsFav] = useState(isInLocalStorage);
 
   function addToFavorites() {
-    const favoritesInLocalStorage = JSON.parse(localStorage.getItem('favoriteMovies')) || []
-    const favoriteMovies = [movie, ...favoritesInLocalStorage]
-    localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies))
-    setIsFav(true)
+    const favoritesInLocalStorage =
+      JSON.parse(localStorage.getItem("favoriteMovies")) || [];
+    const favoriteMovies = [movie, ...favoritesInLocalStorage];
+    localStorage.setItem("favoriteMovies", JSON.stringify(favoriteMovies));
+    setIsFav(true);
   }
 
   function removeFromFavorites() {
-    const favoritesInLocalStorage = JSON.parse(localStorage.getItem('favoriteMovies')) || []
-    const favoriteMovies = favoritesInLocalStorage.filter(m => m.id !== movie.id)
-    localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies))
-    setIsFav(false)
+    const favoritesInLocalStorage =
+      JSON.parse(localStorage.getItem("favoriteMovies")) || [];
+    const favoriteMovies = favoritesInLocalStorage.filter(
+      (m) => m.id !== movie.id
+    );
+    localStorage.setItem("favoriteMovies", JSON.stringify(favoriteMovies));
+    setIsFav(false);
   }
 
   function isInLocalStorage() {
-    const favoritesInLocalStorage = JSON.parse(localStorage.getItem('favoriteMovies')) || []
-    return favoritesInLocalStorage.some(favorite => favorite.id === movie.id)
+    const favoritesInLocalStorage =
+      JSON.parse(localStorage.getItem("favoriteMovies")) || [];
+    return favoritesInLocalStorage.some((favorite) => favorite.id === movie.id);
   }
 
   return (
@@ -47,12 +52,14 @@ export default function Movie(movie) {
         {title} <span className="font-medium text-gray-500">({year})</span>
       </h3>
       {title !== original_title && <h2 className="italic">{original_title}</h2>}
-      <button 
-	className={`absolute top-1 right-1 p-1 focus:outline-none ${isFav ? "text-red-500" : "text-gray-300"} hover:text-red-500`}
-	onClick={isFav ? removeFromFavorites : addToFavorites}
-	>
-      	<Heart fill="currentColor"/>
-        <span className="sr-only" >Add to favorites</span>
+      <button
+        className={`absolute top-1 right-1 p-1 focus:outline-none ${
+          isFav ? "text-red-500" : "text-gray-300"
+        } hover:text-red-500`}
+        onClick={isFav ? removeFromFavorites : addToFavorites}
+      >
+        <Heart fill="currentColor" />
+        <span className="sr-only">Add to favorites</span>
       </button>
       {genres && genres.length > 0 && (
         <p className="my-2 text-gray-500">

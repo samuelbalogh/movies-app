@@ -3,21 +3,26 @@ import ReactTooltip from "react-tooltip";
 
 import { filters } from "./filters";
 
-export default function Filters({ onChange, onSearch, filter }) {
+export default function Filters({ onChange, onSearch, filter, showFavorites }) {
   return (
     <>
       <button
-        className="bg-green-500 p-2 rounded text-white font-medium mb-4 mr-2"
+        className="bg-green-600 p-2 rounded text-white font-medium mb-4 mr-2"
         onClick={onChange}
         data-value="all"
       >
         All movies
       </button>
+      <button
+        className="bg-pink-200 p-2 rounded font-medium mb-4 mr-2"
+        onClick={showFavorites}
+      >
+        My favorites
+      </button>
       {filters.map(({ text, value, tooltip }) => (
         <button
           key={text}
-          className={`bg-blue-600 p-2 rounded text-white font-medium mb-4 mr-2 focus:outline-none border-4 border-white
-            ${value === filter ? "border-yellow-300" : ""}`}
+          className="bg-gray-300 p-2 rounded font-medium mb-4 mr-2"
           onClick={onChange}
           data-value={value}
           data-tip={tooltip}

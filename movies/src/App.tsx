@@ -94,6 +94,11 @@ function App() {
     return words.slice(0, 36).join(" ") + "...";
   };
 
+  const showFavorites = () => {
+    const favs = JSON.parse(localStorage.getItem("favoriteMovies")) || [];
+    setMovies(favs);
+  };
+
   return (
     <div className="container mx-auto mb-6">
       <header className="App-header">
@@ -107,6 +112,7 @@ function App() {
           onChange={handleFilterChange}
           filter={filter}
           onSearch={handleSearchChange}
+          showFavorites={showFavorites}
         />
       </header>
       <ul className="md:grid grid-col grid-cols-3 gap-6">
