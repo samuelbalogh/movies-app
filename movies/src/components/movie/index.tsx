@@ -1,31 +1,57 @@
+import { useState } from 'react';
+
+import { Heart } from 'react-feather';
+
 const max36Words = (text) => {
   const words = text.split(" ");
   if (words.length <= 36) return text;
   return words.slice(0, 36).join(" ") + "...";
 };
 
-export default function Movie({
-  title,
-  original_title,
-  year,
-  cast,
-  genres,
-  poster,
-  overview,
-  imdb_id,
-}) {
+export default function Movie(movie) {
+  const {  
+    title,
+    original_title,
+    year,
+    cast,
+    genres,
+    poster,
+    overview,
+    imdb_id,
+  } = movie
+
+  const [isFav, setIsFav] = useState(isInLocalStorage)
+
+  function addToFavorites() {
+    const favoritesInLocalStorage = JSON.parse(localStorage.getItem('favoriteMovies')) || []
+    const favoriteMovies = [movie, ...favoritesInLocalStorage]
+    localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies))
+    setIsFav(true)
+  }
+
+  function isInLocalStorage() {
+    const favoritesInLocalStorage = JSON.parse(localStorage.getItem('favoriteMovies')) || []
+    return favoritesInLocalStorage.some(favorite => favorite.id === movie.id)
+  }
+
   return (
-    <li className="flex flex-col border border-yellow-400 shadow-lg p-6 pb-2">
+    <li className="flex flex-col relative border border-yellow-400 shadow-lg p-6 pb-2">
       <h3 className="font-semibold text-xl">
         {title} <span className="font-medium text-gray-500">({year})</span>
       </h3>
       {title !== original_title && <h2 className="italic">{original_title}</h2>}
+      <button 
+	className={`absolute top-1 right-1 p-1 focus:outline-none ${isFav ? "text-red-500" : "text-gray-300"} hover:text-red-500`}
+	onClick={addToFavorites}
+	>
+      	<Heart fill="currentColor"/>
+      </button>
       {genres && genres.length > 0 && (
         <p className="my-2 text-gray-500">
-          {genres.map((t, i) => (
-            <span className="inline">
-              {t}
-              {i !== genres.length - 1 && ", "}
+          {genres.map((genre, index) => (
+            <span className="inline" key={index}>
+              {genre}
+              {index !== genres.length - 1 && ", "}
             </span>
           ))}
         </p>
@@ -36,10 +62,10 @@ export default function Movie({
           <span>{max36Words(overview)}</span>
           <span className="mt-3">
             Cast:{" "}
-            {cast.map((t, i) => (
-              <span>
-                {i < 4 && t}
-                {i < 3 && ", "}
+            {cast.map((actor, index) => (
+              <span key={index}>
+                {index < 4 && actor}
+                {index < 3 && ", "}
               </span>
             ))}
           </span>

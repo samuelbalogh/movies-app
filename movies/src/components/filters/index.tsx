@@ -15,6 +15,7 @@ export default function Filters({ onChange, onSearch, filter }) {
       </button>
       {filters.map(({ text, value, tooltip }) => (
         <button
+          key={text}
           className={`bg-blue-600 p-2 rounded text-white font-medium mb-4 mr-2 focus:outline-none border-4 border-white
             ${value === filter ? "border-yellow-300" : ""}`}
           onClick={onChange}

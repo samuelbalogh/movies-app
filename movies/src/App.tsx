@@ -111,7 +111,7 @@ function App() {
       </header>
       <ul className="md:grid grid-col grid-cols-3 gap-6">
         {movies.map((movie) => (
-          <Movie {...movie} />
+          <Movie {...movie} key={movie.id} />
         ))}
       </ul>
       {movies.length >= limit && showLoader && (
