@@ -45,6 +45,7 @@ export default function Movie(movie) {
 	onClick={addToFavorites}
 	>
       	<Heart fill="currentColor"/>
+        <span className="sr-only" >Add to favorites</span>
       </button>
       {genres && genres.length > 0 && (
         <p className="my-2 text-gray-500">
