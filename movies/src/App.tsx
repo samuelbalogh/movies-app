@@ -7,7 +7,7 @@ import Movie from "./components/movie";
 
 const ENDPOINT =
   Boolean(process.env.REACT_APP_API_ENDPOINT) === false
-    ? "http://localhost:5000/"
+    ? "http://localhost:8080/"
     : process.env.REACT_APP_API_ENDPOINT;
 
 function App() {
@@ -69,7 +69,7 @@ function App() {
           }
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }, [offset, filter]);
 
   useEffect(() => {
