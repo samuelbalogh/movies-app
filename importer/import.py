@@ -1,14 +1,20 @@
 import os
 import json
-
+import gzip
+import logging
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 
 
-ENDPOINT = "https://api.themoviedb.org/3/search/movie"
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-FILE_DUMP_ENDPOINT = "http://files.tmdb.org/p/exports/movie_ids_04_28_2017.json.gz"
+ENDPOINT = "https://api.themoviedb.org/3/search/movie"
 
 API_KEY = os.getenv('TMDB_API_KEY') or "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyZDAyMDUwZTU0NWM1ZDY5MzMxNDQxODNkM2EwNjg1ZSIsInN1YiI6IjYwOTZkMmM0YjJlMDc0MDAzYjZmZDczZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._8Kaq74JsWooBPykLOjDsT2F775EP48o9dlf_ZLD3P4"
 
@@ -17,18 +23,32 @@ headers = {
     'Content-Type': 'application/json;charset=utf-8'
 }
 
-
 BASE_URL = 'https://image.tmdb.org/t/p'
 
 MOVIE_ENDPOINT = "https://api.themoviedb.org/3/movie"
 
-MOVIES_TO_FETCH = 50000
+MOVIES_TO_FETCH = 300
 
+URL_PREFIX = 'https://files.tmdb.org/p/exports/'
 
-def download_file_dump():
-    resp = requests.get(FILE_DUMP_ENDPOINT, headers=headers)
-    # TODO
+MOVIE_ID_FILE_OF_THE_DAY = f'movie_ids_{datetime.now().strftime("%m_%d_%Y")}.json.gz'
+MOVIE_ID_FILE_OF_THE_DAY_UNCOMPRESSED = f'movie_ids_{datetime.now().strftime("%m_%d_%Y")}.json'
 
+def download_movie_ids():
+    logger.info(f'Downloading movie IDs from {URL_PREFIX}{MOVIE_ID_FILE_OF_THE_DAY}')
+    resp = requests.get(f'{URL_PREFIX}{MOVIE_ID_FILE_OF_THE_DAY}', headers=headers)
+    with open(MOVIE_ID_FILE_OF_THE_DAY, 'wb') as f:
+        f.write(resp.content)
+    logger.info('Movie IDs downloaded successfully')
+        
+def uncompress_movie_ids():
+    logger.info(f'Uncompressing movie IDs from {MOVIE_ID_FILE_OF_THE_DAY}')
+    with gzip.open(MOVIE_ID_FILE_OF_THE_DAY, 'rb') as compressed_file:
+        with open(MOVIE_ID_FILE_OF_THE_DAY_UNCOMPRESSED, 'w') as uncompressed_file:
+            for line in compressed_file:
+                movie_data = json.loads(line)
+                uncompressed_file.write(json.dumps(movie_data) + '\n')
+    logger.info('Movie IDs uncompressed successfully')
 
 def load_url(url):
     resp = requests.get(url, headers=headers)
@@ -36,27 +56,29 @@ def load_url(url):
 
 
 def get_all_movies():
+    logger.info('Starting movie data collection process')
     urls = []
+    download_movie_ids()
+    uncompress_movie_ids()
 
-    print('reading movie ids...')
-
-    with open('movie_ids_05_08_2021.json', 'r') as movie_ids_file:
+    logger.info('Reading movie IDs from uncompressed file')
+    
+    with open(MOVIE_ID_FILE_OF_THE_DAY_UNCOMPRESSED, 'r') as movie_ids_file:
         # TODO don't read whole file into memory
         for line in movie_ids_file:
             movie = json.loads(line)
             url = f'{MOVIE_ENDPOINT}/{movie["id"]}'
             urls.append({'url': url, 'popularity': movie['popularity']})
 
-
-    print('sorting movies...')
+    logger.info(f'Found {len(urls)} movies in total')
+    logger.info('Sorting movies by popularity')
     urls = sorted(urls, key=lambda movie: movie['popularity'], reverse=True)[:MOVIES_TO_FETCH]
+    logger.info(f'Selected top {MOVIES_TO_FETCH} movies for processing')
 
     all_movies = []
-
-    print('preparing thread pool...')
-
     actors = {}
 
+    logger.info('Starting movie details collection with thread pool')
     with ThreadPoolExecutor(max_workers=30) as movie_executor:
         future_to_url = {movie_executor.submit(load_url, movie['url']): movie['url'] for movie in urls}
         movies_fetched = 0
@@ -65,6 +87,7 @@ def get_all_movies():
                 data = future.result()
                 
                 if 'porn' in data['title'].lower():
+                    logger.warning(f'Skipping inappropriate content: {data["title"]}')
                     continue
 
                 cast_url = f'{MOVIE_ENDPOINT}/{data["id"]}/credits'
@@ -78,13 +101,12 @@ def get_all_movies():
                 del data['adult']
                 all_movies.append(data)
                 if movies_fetched % 10 == 0:
-                    print(f'{movies_fetched} movies fetched')
+                    logger.info(f'Progress: {movies_fetched}/{MOVIES_TO_FETCH} movies fetched')
             except Exception as e:
-                print(e)
+                logger.error(f'Error fetching movie details: {str(e)}')
                 continue
 
-    print('preparing thread pool for actors...')
-
+    logger.info('Starting cast and crew information collection')
     with ThreadPoolExecutor(max_workers=30) as actor_executor:
         cast_counter = 0
         future_to_movie_id = {actor_executor.submit(load_url, cast_url): movie_id for movie_id, cast_url in actors.items()}
@@ -99,14 +121,15 @@ def get_all_movies():
                         movie['crew'] = [crew['name'] for crew in data['crew']]
 
                 if cast_counter % 10 == 0:
-                    print(f'{cast_counter} pieces of cast info fetched')
+                    logger.info(f'Progress: {cast_counter}/{len(actors)} cast information fetched')
             except Exception as e:
-                print(e)
+                logger.error(f'Error fetching cast details for movie {movie_id}: {str(e)}')
                 continue
 
-    print('writing movies to json file...')
+    logger.info(f'Writing {len(all_movies)} movies to result file')
     with open(f'result_{MOVIES_TO_FETCH}.json', 'w') as result_file:
         json.dump(all_movies, result_file)
+    logger.info('Movie data collection completed successfully')
 
 if __name__ == "__main__":
     get_all_movies()

@@ -29,7 +29,8 @@ function App() {
       url = `${url}&offset=0&limit=${limit}`;
     }
     fetch(url, {
-      credentials: "same-origin",
+      mode: 'cors',
+      credentials: 'same-origin',
     })
       .then(async (response) => {
         const data = await response.json();
@@ -55,7 +56,8 @@ function App() {
       url = `${url}&offset=${newOffset}&limit=${limit}`;
     }
     fetch(url, {
-      credentials: "same-origin",
+      mode: 'cors',
+      credentials: 'same-origin',
     })
       .then(async (response) => {
         const data = await response.json();

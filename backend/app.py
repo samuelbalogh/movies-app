@@ -8,11 +8,16 @@ import json
 import random
 
 from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://movies.samu.space", "http://localhost:3000"],
+        "methods": ["GET", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 CHUNKS_TO_LOAD = 6
 
@@ -259,7 +264,6 @@ def paginate(movies, sort=False):
 
 
 @app.route("/")
-@cross_origin()
 def index():
     movies = MOVIES
     if (search_term := request.args.get('search')) is not None:
