@@ -1,9 +1,26 @@
-import { DebounceInput } from "react-debounce-input";
+import { useState, useCallback } from "react";
 import ReactTooltip from "react-tooltip";
 
 import { filters } from "./filters";
 
 export default function Filters({ onChange, onSearch, filter, showFavorites }) {
+  const [searchValue, setSearchValue] = useState(
+    filter.match(/search=.+/g) ? filter.match(/(search=)(.+)/)[2] : ""
+  );
+
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      onSearch({ target: { value } });
+    }, 300),
+    []
+  );
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    debouncedSearch(value);
+  };
+
   return (
     <>
       <button
@@ -33,15 +50,12 @@ export default function Filters({ onChange, onSearch, filter, showFavorites }) {
         </button>
       ))}
 
-      <DebounceInput
+      <input
         className="p-3 m-2 border border-yellow-400 shadow w-72"
         placeholder="Search by year, actor, title, etc..."
         minLength={2}
-        debounceTimeout={300}
-        onChange={onSearch}
-        value={
-          filter.match(/search=.+/g) ? filter.match(/(search=)(.+)/)[2] : ""
-        }
+        value={searchValue}
+        onChange={handleSearchChange}
         onKeyPress={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
@@ -51,4 +65,17 @@ export default function Filters({ onChange, onSearch, filter, showFavorites }) {
       <ReactTooltip />
     </>
   );
+}
+
+// utility function for debouncing
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 }
