@@ -23,7 +23,12 @@ export default function Filters({ onChange, onSearch, filter, showFavorites }) {
     setActiveFilter(value);
 
     const startTime = Date.now();
-    await onChange(e);
+
+    if (value === 'favorites') {
+      await showFavorites();
+    } else {
+      await onChange(e);
+    }
 
     const elapsedTime = Date.now() - startTime;
     const remainingTime = Math.max(0, 80 - elapsedTime);

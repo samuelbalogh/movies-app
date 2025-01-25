@@ -90,12 +90,6 @@ function App() {
     setFilter(`?search=${filter}`);
   };
 
-  const max36Words = (text) => {
-    const words = text.split(" ");
-    if (words.length <= 36) return text;
-    return words.slice(0, 36).join(" ") + "...";
-  };
-
   const showFavorites = () => {
     const favs = JSON.parse(localStorage.getItem("favoriteMovies")) || [];
     setMovies(favs);
