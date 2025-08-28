@@ -180,6 +180,161 @@ Each movie object contains:
 - Frontend error tracking through browser console
 - Performance monitoring through web vitals
 
+## 🚨 Technical Debt & Security Issues
+
+This application has accumulated significant technical debt and security vulnerabilities that should be addressed before production deployment or further development.
+
+### 🔒 Security Vulnerabilities
+
+#### **Critical Issues**
+- **Hardcoded API Tokens**: TMDB API key is hardcoded in `importer/import.py` line 18
+  ```python
+  API_KEY = os.getenv('TMDB_API_KEY') or "eyJhbGciOiJIUzI1NiJ9..."
+  ```
+- **No Rate Limiting**: Backend lacks rate limiting, making it vulnerable to abuse
+- **Overly Permissive CORS**: CORS configuration allows broad access without proper validation
+- **No Input Validation**: API endpoints lack proper input sanitization and validation
+- **Sensitive Data Exposure**: Large JSON files containing movie data are publicly accessible
+
+#### **Medium Priority Issues**
+- **No Authentication**: No user authentication or authorization mechanisms
+- **Local Storage Security**: Favorites stored in browser localStorage without encryption
+- **Error Information Disclosure**: Detailed error messages may expose system information
+- **No HTTPS Enforcement**: No HTTPS redirect or HSTS headers
+
+### 🏗️ Architecture Debt
+
+#### **Performance Issues**
+- **Memory Inefficiency**: Loading entire datasets into memory (O(n) space complexity)
+- **Inefficient Filtering**: Linear search through all movies for each filter operation
+- **No Caching**: No caching layer for frequently accessed data
+- **Large File Handling**: 18MB+ JSON files loaded synchronously
+
+#### **Code Quality Issues**
+- **Incomplete TODO Items**: Multiple TODO comments indicating unfinished implementations
+  ```python
+  # TODO delete the body (lines 63, 80, 90, 100, 110 in app.py)
+  # TODO don't read whole file into memory (line 66 in import.py)
+  ```
+- **Code Duplication**: Repetitive filtering logic across multiple functions
+- **Hardcoded Values**: Magic numbers and hardcoded limits throughout the codebase
+- **No Error Handling**: Minimal error handling and logging
+
+#### **Scalability Concerns**
+- **Single Point of Failure**: No load balancing or horizontal scaling capability
+- **Database Dependency**: No proper database, relying on JSON files
+- **No Monitoring**: No application monitoring or health checks
+- **Resource Constraints**: Memory usage grows linearly with dataset size
+
+### 🔧 Maintenance Debt
+
+#### **Dependency Management**
+- **Outdated Dependencies**: Using older versions of Flask and React
+- **No Dependency Scanning**: No security scanning for vulnerable packages
+- **Mixed Package Managers**: Using both pip and Poetry inconsistently
+
+#### **Testing Gaps**
+- **No Backend Tests**: No unit or integration tests for API endpoints
+- **Limited Frontend Tests**: Only basic Create React App test setup
+- **No API Testing**: No automated API testing or contract validation
+
+#### **Documentation Issues**
+- **Incomplete API Docs**: No OpenAPI/Swagger documentation
+- **Missing Architecture Docs**: No system design or deployment documentation
+- **No Troubleshooting Guide**: No runbook for common issues
+
+### 🚀 Recommended Remediation Plan
+
+#### **Phase 1: Security Fixes (Critical)**
+1. **Remove Hardcoded Tokens**
+   - Move all API keys to environment variables
+   - Implement secure secret management (AWS Secrets Manager, HashiCorp Vault)
+   - Add token rotation capabilities
+
+2. **Implement Rate Limiting**
+   - Add Flask-Limiter or similar rate limiting middleware
+   - Configure appropriate limits per endpoint and user
+   - Add IP-based and user-based rate limiting
+
+3. **Secure CORS Configuration**
+   - Restrict CORS origins to specific domains
+   - Implement proper CORS validation
+   - Add security headers (HSTS, CSP, etc.)
+
+4. **Input Validation**
+   - Add request validation using Marshmallow or similar
+   - Implement proper error handling without information disclosure
+   - Add request size limits
+
+#### **Phase 2: Architecture Improvements**
+1. **Database Migration**
+   - Implement PostgreSQL or MongoDB for data storage
+   - Add database indexing for efficient queries
+   - Implement connection pooling
+
+2. **Caching Layer**
+   - Add Redis for caching frequently accessed data
+   - Implement cache invalidation strategies
+   - Add cache warming for popular endpoints
+
+3. **API Optimization**
+   - Implement pagination with cursor-based navigation
+   - Add query optimization and database indexing
+   - Implement GraphQL for flexible data fetching
+
+#### **Phase 3: Code Quality**
+1. **Testing Implementation**
+   - Add comprehensive unit tests (pytest)
+   - Implement integration tests for API endpoints
+   - Add end-to-end tests for critical user flows
+
+2. **Code Refactoring**
+   - Remove TODO items and implement missing functionality
+   - Refactor duplicate code into reusable functions
+   - Implement proper error handling and logging
+
+3. **Monitoring & Observability**
+   - Add application performance monitoring (APM)
+   - Implement structured logging
+   - Add health checks and metrics collection
+
+#### **Phase 4: Production Readiness**
+1. **Deployment Improvements**
+   - Implement CI/CD pipeline with security scanning
+   - Add automated testing in deployment pipeline
+   - Implement blue-green deployment strategy
+
+2. **Security Hardening**
+   - Add authentication and authorization
+   - Implement proper session management
+   - Add security headers and HTTPS enforcement
+
+3. **Performance Optimization**
+   - Implement CDN for static assets
+   - Add database query optimization
+   - Implement proper caching strategies
+
+### 📊 Technical Debt Metrics
+
+- **Code Coverage**: < 10% (estimated)
+- **Security Vulnerabilities**: 5+ critical issues
+- **Performance**: O(n) complexity for all operations
+- **Maintainability**: Low (multiple TODO items, code duplication)
+- **Scalability**: Poor (memory-bound, no horizontal scaling)
+
+### 🎯 Priority Matrix
+
+| Issue | Impact | Effort | Priority |
+|-------|--------|--------|----------|
+| Hardcoded API tokens | High | Low | Critical |
+| Rate limiting | High | Medium | High |
+| Input validation | High | Medium | High |
+| Database migration | High | High | Medium |
+| Testing implementation | Medium | High | Medium |
+| Code refactoring | Medium | Medium | Low |
+
+---
+
 ## 📈 Future Enhancements
 
 Potential improvements and features:
