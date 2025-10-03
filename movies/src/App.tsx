@@ -7,7 +7,7 @@ import Movie from "./components/movie";
 
 const ENDPOINT =
   Boolean(process.env.REACT_APP_API_ENDPOINT) === false
-    ? "http://localhost:8080/"
+    ? "http://localhost:5010/api/"
     : process.env.REACT_APP_API_ENDPOINT;
 
 function App() {

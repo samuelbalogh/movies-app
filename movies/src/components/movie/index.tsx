@@ -18,6 +18,7 @@ export default function Movie(movie) {
     poster = '',
     overview = '',
     imdb_id = '',
+    justwatch_url = '',
   } = movie;
 
   const [isFav, setIsFav] = useState(isInLocalStorage);
@@ -117,6 +118,16 @@ export default function Movie(movie) {
             >
               View on{" "}
               <img src="/imdb_logo.png" className="inline pb-1 w-10" alt="IMDB" />
+            </a>
+          )}
+          {justwatch_url && (
+            <a
+              href={justwatch_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block mt-auto font-semibold text-green-800 hover:opacity-75"
+            >
+              JustWatch
             </a>
           )}
         </p>
